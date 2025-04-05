@@ -2,13 +2,36 @@
 
 import { useRouter } from 'next/navigation';
 import BottomNav from '../../components/BottomNav';
+import { useRef, useState } from 'react';
 
 const ProfilePage = () => {
     const router = useRouter();
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
+    const [profileImg, setProfileImg] = useState(
+        'https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png'
+    );
 
     const handleLogout = () => {
         localStorage.clear();
         router.push('/login');
+    };
+
+    const handleImageClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+            if (reader.result) {
+                setProfileImg(reader.result as string);
+                // Optional: hier kannst du das Bild später an den Server senden
+            }
+        };
+        reader.readAsDataURL(file);
     };
 
     return (
@@ -17,16 +40,24 @@ const ProfilePage = () => {
 
             <div className="relative">
                 <img
-                    src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
+                    src={profileImg}
                     alt="Profil"
                     className="h-28 w-28 rounded-full object-cover border-4 border-white"
                 />
                 <button
                     title="Profilbild ändern"
                     className="absolute bottom-1 right-1 bg-white p-1 rounded-full"
+                    onClick={handleImageClick}
                 >
                     ✏️
                 </button>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileChange}
+                    className="hidden"
+                />
             </div>
 
             <button
