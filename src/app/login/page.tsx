@@ -5,6 +5,7 @@ import {
     BookmarkAdd,
     Bookmark,
     AddCircle,
+    AccountCircle,
 } from '@mui/icons-material';
 import { useRouter } from 'next/navigation';
 import BottomNav from '../../components/BottomNav';
@@ -26,8 +27,7 @@ const dummyNews: NewsItem[] = [
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis at velit maximus.',
         date: '2025-04-05',
         tag: '#news',
-        image:
-            'https://images.unsplash.com/photo-1603415526960-f8f61e02fdb4?auto=format&fit=crop&w=300&q=80',
+        image: 'https://images.unsplash.com/photo-1603415526960-f8f61e02fdb4?auto=format&fit=crop&w=300&q=80',
     },
     {
         id: 2,
@@ -36,8 +36,7 @@ const dummyNews: NewsItem[] = [
             'System-Update erfolgreich durchgeführt. Neue Features verfügbar.',
         date: '2025-04-06',
         tag: '#update',
-        image:
-            'https://images.unsplash.com/photo-1581091870622-2c61c7aa6ad9?auto=format&fit=crop&w=300&q=80',
+        image: 'https://images.unsplash.com/photo-1581091870622-2c61c7aa6ad9?auto=format&fit=crop&w=300&q=80',
     },
     {
         id: 3,
@@ -46,28 +45,9 @@ const dummyNews: NewsItem[] = [
             'Nächsten Freitag feiern wir unser Sommerfest – Essen, Musik und Spaß!',
         date: '2025-04-07',
         tag: '#event',
-        image:
-            'https://images.unsplash.com/photo-1506784365847-bbad939e9335?auto=format&fit=crop&w=300&q=80',
+        image: 'https://images.unsplash.com/photo-1506784365847-bbad939e9335?auto=format&fit=crop&w=300&q=80',
     },
 ];
-
-// 🔍 Text-Hervorhebung für Suchtreffer
-const highlightMatch = (text: string, query: string) => {
-    if (!query) return text;
-
-    const regex = new RegExp(`(${query})`, 'gi');
-    const parts = text.split(regex);
-
-    return parts.map((part, index) =>
-        regex.test(part) ? (
-            <mark key={index} className="bg-yellow-300 text-black rounded px-1">
-                {part}
-            </mark>
-        ) : (
-            part
-        )
-    );
-};
 
 const NewsPage: React.FC = () => {
     const [selectedTag, setSelectedTag] = useState<string>('Alle');
@@ -122,30 +102,25 @@ const NewsPage: React.FC = () => {
         <div className="min-h-screen bg-gradient-to-b from-pink-400 via-purple-500 to-blue-600 text-white p-4 pb-[100px]">
             {/* Header */}
             <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl font-bold text-white">NEWSII</h1>
-                <div
-                    className="cursor-pointer"
-                    onClick={() => router.push('/profile')}
-                    title="Zum Profil"
-                >
-                    <img
-                        src="https://upload.wikimedia.org/wikipedia/commons/9/99/Sample_User_Icon.png"
-                        alt="Profil"
-                        className="h-10 w-10 rounded-full border-2 border-white shadow"
-                    />
+                <div className="flex items-center space-x-2">
+                    <AccountCircle className="text-white" fontSize="large" />
+                    <h1 className="text-2xl font-bold">NEWSII</h1>
                 </div>
+                {isAdmin && (
+                    <AddCircle className="text-white cursor-pointer" fontSize="large" />
+                )}
             </div>
 
-            {/* Suche */}
+            {/* Search Input */}
             <input
                 type="text"
-                placeholder="Suche News..."
+                placeholder="search"
                 className="w-full p-2 rounded text-black mb-4 border border-yellow-400 focus:outline-none focus:ring-2 focus:ring-yellow-400"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
             />
 
-            {/* Tags + Bookmark */}
+            {/* Tags + Bookmark Filter */}
             <div className="flex items-center justify-between mb-4">
                 <div className="flex gap-2 flex-wrap">
                     {tags.map((tag) => (
@@ -171,7 +146,7 @@ const NewsPage: React.FC = () => {
                 </button>
             </div>
 
-            {/* News Cards */}
+            {/* News List */}
             <div className="space-y-4">
                 {filteredNews.map((item) => (
                     <div
@@ -186,12 +161,8 @@ const NewsPage: React.FC = () => {
                   </span>
                                 </div>
                                 <span className="text-sm text-gray-500">{item.date}</span>
-                                <h2 className="font-bold mt-1 text-lg">
-                                    {highlightMatch(item.title, searchQuery)}
-                                </h2>
-                                <p className="text-sm text-gray-600 mt-1">
-                                    {highlightMatch(item.description, searchQuery)}
-                                </p>
+                                <h2 className="font-bold mt-1 text-lg">{item.title}</h2>
+                                <p className="text-sm text-gray-600 mt-1">{item.description}</p>
                             </div>
                             <div className="ml-4 text-right">
                                 {item.image && (
@@ -220,7 +191,7 @@ const NewsPage: React.FC = () => {
                 ))}
             </div>
 
-            {/* Zoom-Image Modal */}
+            {/* Image Modal */}
             {activeImage && (
                 <div
                     className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50"

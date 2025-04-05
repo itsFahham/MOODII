@@ -3,32 +3,49 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
-    Home as HomeIcon,
-    AccountCircle,
     Newspaper,
+    EmojiEmotions,
+    ChatBubbleOutline,
 } from '@mui/icons-material';
 
 const BottomNav = () => {
     const pathname = usePathname();
 
     return (
-        <nav className="fixed bottom-0 left-0 w-full bg-white shadow-lg flex justify-around py-2 z-50">
+        <nav className="fixed bottom-0 left-0 w-full bg-white shadow-lg flex justify-around items-center py-2 z-50 rounded-t-3xl">
+            {/* Linke Seite: MOODI */}
+            <Link href="/moodi">
+                <div
+                    className={`flex flex-col items-center ${
+                        pathname === '/moodi' ? 'text-pink-500' : 'text-gray-600'
+                    }`}
+                >
+                    <EmojiEmotions fontSize="large" />
+                    <span className="text-xs font-semibold">MOODI</span>
+                </div>
+            </Link>
+
+            {/* Mitte: NEWSII */}
             <Link href="/news">
-                <div className={`flex flex-col items-center ${pathname === '/news' ? 'text-pink-500' : 'text-gray-600'}`}>
-                    <Newspaper />
-                    <span className="text-xs">News</span>
+                <div
+                    className={`flex flex-col items-center ${
+                        pathname === '/news' ? 'text-pink-500' : 'text-gray-600'
+                    }`}
+                >
+                    <Newspaper fontSize="large" />
+                    <span className="text-xs font-bold">NEWSII</span>
                 </div>
             </Link>
-            <Link href="/">
-                <div className={`flex flex-col items-center ${pathname === '/' ? 'text-pink-500' : 'text-gray-600'}`}>
-                    <HomeIcon />
-                    <span className="text-xs">Home</span>
-                </div>
-            </Link>
-            <Link href="/profile">
-                <div className={`flex flex-col items-center ${pathname === '/profile' ? 'text-pink-500' : 'text-gray-600'}`}>
-                    <AccountCircle />
-                    <span className="text-xs">Profil</span>
+
+            {/* Rechte Seite: SOCIAL */}
+            <Link href="/social">
+                <div
+                    className={`flex flex-col items-center ${
+                        pathname === '/social' ? 'text-pink-500' : 'text-gray-600'
+                    }`}
+                >
+                    <ChatBubbleOutline fontSize="large" />
+                    <span className="text-xs font-semibold">SOCIAL</span>
                 </div>
             </Link>
         </nav>

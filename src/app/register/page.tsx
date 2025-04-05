@@ -1,45 +1,36 @@
+'use client';
+
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import axios from 'axios';
 
-interface LoginPageProps {
-    onLogin: () => void;
-}
-
-const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
-    const navigate = useNavigate();
+const Page = () => {
+    const router = useRouter();
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
 
-    const handleLogin = async () => {
+    const handleRegister = async () => {
         try {
-            const res = await axios.post('http://localhost:5000/api/auth/login', {
+            await axios.post('http://localhost:5000/api/auth/register', {
                 username,
                 password,
             });
 
-            // Speichere den JWT-Token und User-Daten im localStorage
-            localStorage.setItem('token', res.data.token);
-            localStorage.setItem('username', res.data.username);
-            localStorage.setItem('role', res.data.role);
-
-            alert('Login erfolgreich! 👋');
-
-            // Informiere App.tsx über erfolgreichen Login
-            onLogin();
+            alert('Registrierung erfolgreich 🎉');
+            router.push('/login'); // ✅ redirect after success
         } catch (error: any) {
-            if (error.response) {
-                alert('Login fehlgeschlagen: ' + error.response.data.error);
-            } else {
-                alert('Netzwerkfehler: ' + error.message);
-            }
+            alert(
+                'Fehler bei Registrierung: ' +
+                (error.response?.data?.error || 'Unbekannter Fehler')
+            );
         }
     };
 
     return (
         <div className="flex justify-center items-center h-screen bg-gradient-to-b from-pink-400 to-purple-600">
             <div className="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full text-center">
-                <h2 className="text-2xl font-bold mb-4">Willkommen zurück 👋</h2>
+                <h2 className="text-2xl font-bold mb-4">Neues Konto erstellen ✨</h2>
+
                 <input
                     type="text"
                     placeholder="Benutzername"
@@ -47,6 +38,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                     onChange={(e) => setUsername(e.target.value)}
                     className="border p-2 rounded w-full mb-4"
                 />
+
                 <input
                     type="password"
                     placeholder="Passwort"
@@ -54,24 +46,26 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
                     onChange={(e) => setPassword(e.target.value)}
                     className="border p-2 rounded w-full mb-4"
                 />
+
                 <button
-                    onClick={handleLogin}
+                    onClick={handleRegister}
                     className="bg-indigo-600 text-white font-bold py-2 px-4 rounded w-full hover:bg-indigo-700"
                 >
-                    Einloggen
+                    Registrieren
                 </button>
+
                 <p className="mt-4">
-                    Noch kein Konto?{' '}
+                    Bereits registriert?{' '}
                     <span
                         className="text-pink-500 cursor-pointer"
-                        onClick={() => navigate('/register')}
+                        onClick={() => router.push('/login')}
                     >
-                        Jetzt registrieren
-                    </span>
+            Zum Login
+          </span>
                 </p>
             </div>
         </div>
     );
 };
 
-export default LoginPage;
+export default Page;
